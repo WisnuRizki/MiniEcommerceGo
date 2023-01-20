@@ -22,7 +22,6 @@ func ConnectDatabase() {
 	}
 
 	db.AutoMigrate(
-		&modules.Role{},
 		&modules.User{},
 		&modules.Admin{},
 		&modules.Seller{},

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"miniecommerce.wisnu.net/database"
-
+	"miniecommerce.wisnu.net/master/user"
 )
 
 
@@ -17,14 +17,16 @@ func main(){
 
 	fmt.Println("Connection to database Establish")
 
+	// Initiate Handler
+	userHandler := user.User{}
+
 	// Router User
-	// userHandler := user.User{}
-	// userRoute := r.Group("/v1/user")
-	// {
-	// 	userRoute.POST("/register",userHandler.InsertUser)
-	// 	userRoute.POST("/login",userHandler.Login)
-	// 	userRoute.GET("/get-photo",helpers.Auth(),userHandler.GetPhotoUser)
-	// }
+	userRoute := r.Group("/v1/user")
+	{
+		userRoute.POST("/register",userHandler.Register)
+		userRoute.POST("/login",userHandler.Login)
+		// userRoute.GET("/get-photo",helpers.Auth(),userHandler.GetPhotoUser)
+	}
 
 	// // Router Photo
 	// photoHandler := photo.Photo{}

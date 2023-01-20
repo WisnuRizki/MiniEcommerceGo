@@ -4,42 +4,32 @@ import (
 	"time"
 )
 
-type Role struct {
-	ID        	uint      	`json:"id"`
-	Type 		string 		`json:"type"`
-}
 
 type User struct {
 	ID        	uint      	`json:"id"`
 	FirstName 	string    	`json:"first_name"`
 	LastName  	string    	`json:"last_name"`
-	Email     	string    	`json:"email"`
-	Password  	string    	`json:"password"`
+	Email     	string    	`json:"email" binding:"required"`
+	Password  	string    	`json:"password" binding:"required"`
 	CreatedAt 	time.Time 	`json:"created_at"`
 	UpdatedAt 	time.Time 	`json:"updated_at"`
-	RoleId 		int 		`json:"role"`
-	Role 		Role 		`json:"user_role"`
 	History 	[]History	`json:"history"`
 }
 
 type Admin struct {
 	ID        		uint      	`json:"id"`
-	Username     	string    	`json:"username"`
-	Password  		string    	`json:"password"`
-	RoleId 			int 		`json:"role"`
-	Role 			Role 		`json:"user_role"`
+	Username     	string    	`json:"username" binding:"required"`
+	Password  		string    	`json:"password" binding:"required"`
 }
 
 type Seller struct {
 	ID        	uint      	`json:"id"`
-	Name  		string    	`json:"last_name"`
-	NoHp 		string		`json:"no_hp"`
-	Email     	string    	`json:"email"`
-	Password  	string    	`json:"password"`
+	Name  		string    	`json:"name" binding:"required"`
+	NoHp 		string		`json:"no_hp" binding:"required"`
+	Email     	string    	`json:"email" binding:"required"`
+	Password  	string    	`json:"password" binding:"required"`
 	CreatedAt 	time.Time 	`json:"created_at"`
 	UpdatedAt 	time.Time 	`json:"updated_at"`
-	RoleId 		int 		`json:"role"`
-	Role 		Role 		`json:"user_role"`
 	Products 	[]Product	`json:"product"`
 }
 
