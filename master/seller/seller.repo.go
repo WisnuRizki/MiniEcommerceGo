@@ -19,10 +19,22 @@ func (seller *Seller) CreateSeller(u *Seller) error {
 	return nil
 }
 
-func (seller *Seller) CheckDataSellerExists(email,nohp string) (*Seller,int64){
+func (seller *Seller) CheckDataSellerExists(email string) (*Seller,int64){
 	data := Seller{}
 
-	result := database.DB.Where(&Seller{Email: email,NoHp: nohp}).Find(&data)
+	result := database.DB.Where(&Seller{Email: email}).Find(&data)
+
+	if result.RowsAffected == 0 {
+		return nil,0
+	}
+
+	return &data,result.RowsAffected
+}
+
+func (seller *Seller) CheckDataSellerExistById(id uint) (*Seller,int64){
+	data := Seller{}
+
+	result := database.DB.Where(&Seller{ID: id}).Find(&data)
 
 	if result.RowsAffected == 0 {
 		return nil,0

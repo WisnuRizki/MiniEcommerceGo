@@ -9,25 +9,25 @@ type User struct {
 	ID        	uint      	`json:"id"`
 	FirstName 	string    	`json:"first_name"`
 	LastName  	string    	`json:"last_name"`
-	Email     	string    	`json:"email" binding:"required"`
-	Password  	string    	`json:"password" binding:"required"`
+	Email     	string    	`json:"email"`
+	Password  	string    	`json:"password"`
 	CreatedAt 	time.Time 	`json:"created_at"`
 	UpdatedAt 	time.Time 	`json:"updated_at"`
-	History 	[]History	`json:"history"`
+	History 	*[]History	`json:"history"`
 }
 
 type Admin struct {
 	ID        		uint      	`json:"id"`
-	Username     	string    	`json:"username" binding:"required"`
-	Password  		string    	`json:"password" binding:"required"`
+	Username     	string    	`json:"username" `
+	Password  		string    	`json:"password" `
 }
 
 type Seller struct {
 	ID        	uint      	`json:"id"`
 	Name  		string    	`json:"name"`
 	NoHp 		string		`json:"no_hp"`
-	Email     	string    	`json:"email" binding:"required"`
-	Password  	string    	`json:"password" binding:"required"`
+	Email     	string    	`json:"email" `
+	Password  	string    	`json:"password"`
 	CreatedAt 	time.Time 	`json:"created_at"`
 	UpdatedAt 	time.Time 	`json:"updated_at"`
 	Products 	[]Product	`json:"product"`
@@ -47,8 +47,8 @@ type Product struct {
 	CategoryId		int			`json:"category_id"`
 	Price 			int64		`json:"price"`
 	Quantity		int 		`json:"quantity"`
-	Seller			Seller 		`json:"seller"`
-	Category 		Category	`json:"category"` 
+	Seller			*Seller 		`json:"seller"`
+	Category 		*Category	`json:"category"` 
 }
 
 type Category struct {
@@ -62,6 +62,6 @@ type History struct {
 	ProductId 	int 		`json:"product_id"`
 	Quantity	int  		`json:"quantity"`
 	TotalPrice 	int64 		`json:"total_price"`
-	User 		User 		`json:"user"`
-	Product 	Product		`json:"product"`
+	User 		*User 		`json:"user"`
+	Product 	*Product		`json:"product"`
 }
