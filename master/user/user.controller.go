@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"miniecommerce.wisnu.net/helpers"
+	"miniecommerce.wisnu.net/master/balance"
 )
 
 func (user *User) Register(c *gin.Context){
@@ -42,6 +43,17 @@ func (user *User) Register(c *gin.Context){
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,gin.H{
 			"message": "Internal Server error",
+		})
+		return
+	}
+
+
+	// Membuat balance di akun baru
+	balance := balance.Balance{}
+	err = balance.CreateBalance(int(user.ID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Failed to create balance",
 		})
 		return
 	}

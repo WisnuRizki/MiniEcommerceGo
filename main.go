@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"miniecommerce.wisnu.net/database"
+	"miniecommerce.wisnu.net/master/seller"
 	"miniecommerce.wisnu.net/master/user"
 )
 
@@ -19,6 +20,7 @@ func main(){
 
 	// Initiate Handler
 	userHandler := user.User{}
+	sellerHandler := seller.Seller{}
 
 	// Router User
 	userRoute := r.Group("/v1/user")
@@ -28,13 +30,11 @@ func main(){
 		// userRoute.GET("/get-photo",helpers.Auth(),userHandler.GetPhotoUser)
 	}
 
-	// // Router Photo
-	// photoHandler := photo.Photo{}
-	// photoRoute := r.Group("/v1/photo")
-	// {
-	// 	photoRoute.POST("/create",helpers.Auth(),photoHandler.CreatePhoto)
-	// 	photoRoute.GET("/get-user-photo",helpers.Auth(),photoHandler.GetUserPhoto)
-	// }
+	// Router Seller
+	sellerRoute := r.Group("/v1/seller")
+	{
+		sellerRoute.POST("/register",sellerHandler.RegisterSeller)
+	}
 
 	// // Router Comment
 	// commentHandler := comment.Comment{}

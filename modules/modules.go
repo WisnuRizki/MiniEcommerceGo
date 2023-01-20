@@ -24,8 +24,8 @@ type Admin struct {
 
 type Seller struct {
 	ID        	uint      	`json:"id"`
-	Name  		string    	`json:"name" binding:"required"`
-	NoHp 		string		`json:"no_hp" binding:"required"`
+	Name  		string    	`json:"name"`
+	NoHp 		string		`json:"no_hp"`
 	Email     	string    	`json:"email" binding:"required"`
 	Password  	string    	`json:"password" binding:"required"`
 	CreatedAt 	time.Time 	`json:"created_at"`
