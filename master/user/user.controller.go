@@ -7,6 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"miniecommerce.wisnu.net/helpers"
 	"miniecommerce.wisnu.net/master/balance"
+	"miniecommerce.wisnu.net/master/history"
+	"miniecommerce.wisnu.net/master/product"
 )
 
 func (user *User) Register(c *gin.Context){
@@ -101,3 +103,95 @@ func (user *User) Login(c *gin.Context){
 	})
 
 }
+
+// Buy Product
+
+func (user *User) BuyProduct(c *gin.Context){
+	history := []history.History{}
+	balance := balance.Balance{}
+	product := product.Product{}
+	grandTotal := 0
+	
+	err := c.BindJSON(&history)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,gin.H{
+			"message": "Bad request json",
+		})
+		return 
+	}
+
+	// Get Amount Balance User
+	amount,row := balance.CheckBalanceByUserId(history[0].UserId)
+	if row == 0 {
+		c.JSON(http.StatusNotFound,gin.H{
+			"message": "Balance Not Found",
+		})
+		return 
+	}
+
+	// Check stock ,reduce stock & sum total_price
+	for _,data := range history {
+		// Check Stock
+		stock,err := product.GetProductById(uint(data.ProductId))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError,gin.H{
+				"message": "Product Not found",
+			})
+			return 
+		}
+
+		if stock.Quantity < data.Quantity {
+			c.JSON(http.StatusBadRequest,gin.H{
+				"message": "not enough stock",
+			})
+			return 
+		}
+
+		err = stock.UpdateProductStock(uint(data.ProductId),data.Quantity,stock.Quantity,"reduce")
+		if err != nil {
+			c.JSON(http.StatusBadRequest,gin.H{
+				"message": "Failed To reduce stock",
+			})
+			return 
+		}
+
+
+		// total price
+		grandTotal = grandTotal + int(data.TotalPrice)
+	}
+
+	// Check grand total with balance amount
+	if amount.Amount < int64(grandTotal){
+		c.JSON(http.StatusBadRequest,gin.H{
+			"message": "Not Enough Balance",
+		})
+		return 
+	}
+
+	// Insert to history
+
+	err = history[0].CreateHistory(history)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Something went wrong",
+		})
+		return 
+	}
+	// Reduce Balance User
+	err = balance.ReduceBalance(history[0].UserId,int64(grandTotal),amount.Amount)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Something went wrong",
+		})
+		return 
+	}
+
+	c.JSON(http.StatusOK,gin.H{
+		"messaga": "Success buy Product",
+		"data": history,
+	})
+}
+
+// Get User History
+
+// Check Balance

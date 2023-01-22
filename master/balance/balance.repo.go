@@ -38,3 +38,13 @@ func (balance *Balance) AddBalance(userId int,amount int64,initialAmount int64) 
 
 	return nil
 }
+
+func (balance *Balance) ReduceBalance(userId int,amount int64,initialAmount int64) error {
+	totalAmount := initialAmount -amount
+	result := database.DB.Model(&balance).Where(&Balance{UserId: userId}).Updates(Balance{Amount: totalAmount})
+	if result.RowsAffected == 0 {
+		return result.Error
+	}
+
+	return nil
+}

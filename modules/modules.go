@@ -63,5 +63,5 @@ type History struct {
 	Quantity	int  		`json:"quantity"`
 	TotalPrice 	int64 		`json:"total_price"`
 	User 		*User 		`json:"user"`
-	Product 	*Product		`json:"product"`
+	Product 	*Product	`json:"product"`
 }

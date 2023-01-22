@@ -8,16 +8,14 @@ import (
 	"miniecommerce.wisnu.net/helpers"
 	"miniecommerce.wisnu.net/master/admin"
 	"miniecommerce.wisnu.net/master/balance"
+	"miniecommerce.wisnu.net/master/category"
 	"miniecommerce.wisnu.net/master/product"
 	"miniecommerce.wisnu.net/master/seller"
 	"miniecommerce.wisnu.net/master/user"
 )
 
 // Todo
-// [V] Register Admin
-// [V] Login Admin
-// [] Add Balance
-// [] Add Category
+// [] Buy Product User
 
 
 
@@ -35,12 +33,14 @@ func main(){
 	productHandler := product.Product{}
 	adminHandler := admin.Admin{}
 	balanceHandler := balance.Balance{}
+	categoryHandler := category.Category{}
 
 	// Router User
 	userRoute := r.Group("/v1/user")
 	{
 		userRoute.POST("/register",userHandler.Register)
 		userRoute.POST("/login",userHandler.Login)
+		userRoute.POST("/buy-product",userHandler.BuyProduct)
 	}
 
 	// Router Seller
@@ -57,6 +57,7 @@ func main(){
 		adminRoute.POST("/register",adminHandler.RegisterAdmin)
 		adminRoute.POST("/login",adminHandler.LoginAdmin)
 		adminRoute.PUT("/add-balance",helpers.Auth(),balanceHandler.AddBalanceUser)
+		adminRoute.POST("/add-category",helpers.Auth(),categoryHandler.CreateCategory)
 	}
 
 	

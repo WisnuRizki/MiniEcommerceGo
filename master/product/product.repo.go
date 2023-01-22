@@ -15,3 +15,36 @@ func (product *Product) CreateProduct(p []Product)error {
 
 	return nil
 }
+
+func (product *Product) GetProductById(id uint) (*Product,error){
+	data := Product{}
+	result := database.DB.Where(&Product{ID: id}).Find(&data)
+	if result.RowsAffected == 0 {
+		return nil,result.Error
+	}
+
+	return &data,nil
+}
+
+func (product *Product) UpdateProductStock(
+	id uint,
+	amount int,
+	initialAmount int,
+	types string) error {
+		var totalAmount int
+		if types == "sum"{
+			totalAmount = initialAmount + amount
+		}else{
+			totalAmount = initialAmount - amount
+		}
+
+		result := database.DB.Model(&product).Where(&Product{ID: id}).Updates(Product{Quantity: totalAmount})
+		if result.RowsAffected == 0 {
+			return result.Error
+		}
+
+		return nil
+
+
+}
+
