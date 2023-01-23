@@ -15,3 +15,13 @@ func (history *History) CreateHistory(h []History) (error) {
 
 	return nil
 }
+
+func (history *History) GetHistoryByUserId(userId int) (*[]History){
+	data := []History{}
+	result := database.DB.Where(&History{UserId: userId}).Preload("Product").Find(&data)
+	if result.RowsAffected == 0 {
+		return nil
+	}
+
+	return &data
+}

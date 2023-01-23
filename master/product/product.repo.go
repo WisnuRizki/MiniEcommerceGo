@@ -48,3 +48,14 @@ func (product *Product) UpdateProductStock(
 
 }
 
+func (product *Product) GetAllProductSeller(sellerId int)(*[]Product,error){
+	data := []Product{}
+
+	result := database.DB.Where(&Product{SellerId: sellerId}).Preload("Seller").Preload("Category").Find(&data)
+	if result.RowsAffected == 0 {
+		return nil,result.Error
+	}
+
+	return &data,nil
+}
+

@@ -37,7 +37,7 @@ type Balance struct {
 	ID        	uint      	`json:"id"`
 	UserId		int 		`json:"user_id"`
 	Amount 		int64 		`json:"amount"`	
-	User 		User 		`json:"user"`
+	User 		*User 		`json:"user"`
 }
 
 type Product struct {

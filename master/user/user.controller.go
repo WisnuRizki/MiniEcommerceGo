@@ -111,6 +111,7 @@ func (user *User) BuyProduct(c *gin.Context){
 	balance := balance.Balance{}
 	product := product.Product{}
 	grandTotal := 0
+	idMidleware := c.MustGet("id").(float64)
 	
 	err := c.BindJSON(&history)
 	if err != nil {
@@ -121,7 +122,7 @@ func (user *User) BuyProduct(c *gin.Context){
 	}
 
 	// Get Amount Balance User
-	amount,row := balance.CheckBalanceByUserId(history[0].UserId)
+	amount,row := balance.CheckBalanceByUserId(int(idMidleware))
 	if row == 0 {
 		c.JSON(http.StatusNotFound,gin.H{
 			"message": "Balance Not Found",
@@ -130,7 +131,7 @@ func (user *User) BuyProduct(c *gin.Context){
 	}
 
 	// Check stock ,reduce stock & sum total_price
-	for _,data := range history {
+	for i,data := range history {
 		// Check Stock
 		stock,err := product.GetProductById(uint(data.ProductId))
 		if err != nil {
@@ -154,8 +155,7 @@ func (user *User) BuyProduct(c *gin.Context){
 			})
 			return 
 		}
-
-
+		history[i].UserId = 1
 		// total price
 		grandTotal = grandTotal + int(data.TotalPrice)
 	}
@@ -193,5 +193,43 @@ func (user *User) BuyProduct(c *gin.Context){
 }
 
 // Get User History
+func (user *User) CheckHistory(c *gin.Context){
+	history := history.History{}
+	idMidleware := c.MustGet("id").(float64)
+
+
+	res := history.GetHistoryByUserId(int(idMidleware))
+	if res == nil {
+		c.JSON(http.StatusNotFound,gin.H{
+			"message": "History Not Found",
+			"id": idMidleware,
+		})
+		return
+	}
+
+	c.JSON(http.StatusBadRequest,gin.H{
+		"message": "Success",
+		"data": res,
+	})
+	
+}
 
 // Check Balance
+func (user *User) CheckBalance(c *gin.Context){
+	balance := balance.Balance{}
+	idMidleware := c.MustGet("id").(float64)
+
+	res,row := balance.CheckBalanceByUserId(int(idMidleware))
+	if row == 0 {
+		c.JSON(http.StatusNotFound,gin.H{
+			"message": "Balance Not Found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusNotFound,gin.H{
+		"message": "Success Get Balance",
+		"data": res,
+	})
+	
+}

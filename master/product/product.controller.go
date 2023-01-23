@@ -55,3 +55,20 @@ func (product Product) Create(c *gin.Context){
 	})
 
 }
+
+func (product Product) GetAllProductBySeller(c *gin.Context){
+	idMidleware := c.MustGet("id").(float64)
+
+	res,err := product.GetAllProductSeller(int(idMidleware))
+	if err != nil {
+		c.JSON(http.StatusBadRequest,gin.H{
+			"message": "Product Not Found",
+		})
+		return 
+	}
+
+	c.JSON(http.StatusBadRequest,gin.H{
+		"message": "Success Get All Product",
+		"data": res,
+	})
+}

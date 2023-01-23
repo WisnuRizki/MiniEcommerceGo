@@ -40,7 +40,9 @@ func main(){
 	{
 		userRoute.POST("/register",userHandler.Register)
 		userRoute.POST("/login",userHandler.Login)
-		userRoute.POST("/buy-product",userHandler.BuyProduct)
+		userRoute.POST("/buy-product",helpers.Auth(),userHandler.BuyProduct)
+		userRoute.GET("/history",helpers.Auth(),userHandler.CheckHistory)
+		userRoute.GET("/balance",helpers.Auth(),userHandler.CheckBalance)
 	}
 
 	// Router Seller
@@ -49,6 +51,7 @@ func main(){
 		sellerRoute.POST("/register",sellerHandler.RegisterSeller)
 		sellerRoute.POST("/login",sellerHandler.LoginSeller)
 		sellerRoute.POST("/create-product",helpers.Auth(),productHandler.Create)
+		sellerRoute.GET("/get-product",helpers.Auth(),productHandler.GetAllProductBySeller)
 	}
 
 	// Router Admin

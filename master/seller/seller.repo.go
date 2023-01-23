@@ -54,3 +54,4 @@ func (seller *Seller) LoginUser(email string,password string) error {
 	return nil
 
 }
+
