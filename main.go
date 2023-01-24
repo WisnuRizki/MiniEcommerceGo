@@ -61,6 +61,10 @@ func main(){
 		adminRoute.POST("/login",adminHandler.LoginAdmin)
 		adminRoute.PUT("/add-balance",helpers.Auth(),balanceHandler.AddBalanceUser)
 		adminRoute.POST("/add-category",helpers.Auth(),categoryHandler.CreateCategory)
+		adminRoute.DELETE("/delete-category/:id",helpers.Auth(),categoryHandler.DeleteCategory)
+		adminRoute.GET("/get-category/",helpers.Auth(),categoryHandler.GetAllCategory)
+		adminRoute.GET("/get-category-id/:id",helpers.Auth(),categoryHandler.GetCategoryById)
+		adminRoute.PUT("/update-category/:id",helpers.Auth(),categoryHandler.UpdateCategoryById)
 	}
 
 	

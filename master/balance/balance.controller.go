@@ -49,3 +49,5 @@ func (balance *Balance) AddBalanceUser(c *gin.Context){
 		"data": balance,
 	})
 }
+
+// Get ALl Balance
