@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -155,7 +156,7 @@ func (user *User) BuyProduct(c *gin.Context){
 			})
 			return 
 		}
-		history[i].UserId = 1
+		history[i].UserId = int(idMidleware)
 		// total price
 		grandTotal = grandTotal + int(data.TotalPrice)
 	}
@@ -233,3 +234,53 @@ func (user *User) CheckBalance(c *gin.Context){
 	})
 	
 }
+
+// Delete User
+func (user *User) DeleteUser(c *gin.Context){
+	history := history.History{}
+	balance := balance.Balance{}
+
+	params := c.Param("id")
+	id,err := strconv.Atoi(params)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,gin.H{
+			"message": "ID Not found",
+		})
+		return
+	}
+	
+	// Delete History
+	err = history.DeleteByUserId(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Cant Delete History",
+		})
+		return
+	}
+
+	// Delete Balance
+	err = balance.DeleteByUserId(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Cant Delete Balance",
+		})
+		return
+	}
+
+	// Delete User
+	err = user.Delete(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Cant Delete User",
+		})
+		return
+	}
+
+	// Succes Response
+
+	c.JSON(http.StatusInternalServerError,gin.H{
+		"message": "Success Delete User",
+	})
+}
+
+

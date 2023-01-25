@@ -59,3 +59,11 @@ func (product *Product) GetAllProductSeller(sellerId int)(*[]Product,error){
 	return &data,nil
 }
 
+func (product *Product) Delete(sellerId int, id uint) error {
+	result := database.DB.Where(&Product{ID: id,SellerId: sellerId}).Delete(&product)
+	if result.RowsAffected == 0 {
+		return result.Error
+	}
+
+	return nil
+}

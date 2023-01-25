@@ -3,10 +3,10 @@ package product
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"miniecommerce.wisnu.net/master/seller"
-	
 )
 
 func (product Product) Create(c *gin.Context){
@@ -72,3 +72,33 @@ func (product Product) GetAllProductBySeller(c *gin.Context){
 		"data": res,
 	})
 }
+
+// Delete Product
+
+func (product Product) DeleteProductSeller(c *gin.Context){
+	idMidleware := c.MustGet("id").(float64)
+	params := c.Param("id")
+	id,err := strconv.Atoi(params)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,gin.H{
+			"message": "ID Not found",
+		})
+		return
+	}
+
+	err = product.Delete(int(idMidleware),uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Something went wrong",
+		})
+		return
+	}
+
+	c.JSON(http.StatusInternalServerError,gin.H{
+		"message": "Success Delete Product",
+	})
+}
+
+// Update Product
+
+

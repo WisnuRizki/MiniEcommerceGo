@@ -48,10 +48,11 @@ func (seller *Seller) LoginUser(email string,password string) error {
 
 	result := database.DB.Where(&Seller{Email: email,Password: password}).Find(&data)
 	if result.RowsAffected == 0 {
-		return errors.New("Not Found")
+		return errors.New("not Found")
 	}
 
 	return nil
 
 }
+
 

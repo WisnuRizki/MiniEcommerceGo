@@ -48,3 +48,23 @@ func (balance *Balance) ReduceBalance(userId int,amount int64,initialAmount int6
 
 	return nil
 }
+
+func (balance *Balance) DeleteByUserId(userId int) error {
+	result := database.DB.Where(&Balance{UserId: userId}).Delete(&balance)
+	if result.RowsAffected == 0 {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (balance *Balance) GetAll() *[]Balance {
+	data := []Balance{}
+	result := database.DB.Preload("User").Find(&data)
+	if result.RowsAffected == 0 {
+		return nil
+	}
+
+	return &data
+
+}

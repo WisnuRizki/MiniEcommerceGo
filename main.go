@@ -52,6 +52,7 @@ func main(){
 		sellerRoute.POST("/login",sellerHandler.LoginSeller)
 		sellerRoute.POST("/create-product",helpers.Auth(),productHandler.Create)
 		sellerRoute.GET("/get-product",helpers.Auth(),productHandler.GetAllProductBySeller)
+		sellerRoute.DELETE("/delete-product/:id",helpers.Auth(),productHandler.DeleteProductSeller)
 	}
 
 	// Router Admin
@@ -65,6 +66,8 @@ func main(){
 		adminRoute.GET("/get-category/",helpers.Auth(),categoryHandler.GetAllCategory)
 		adminRoute.GET("/get-category-id/:id",helpers.Auth(),categoryHandler.GetCategoryById)
 		adminRoute.PUT("/update-category/:id",helpers.Auth(),categoryHandler.UpdateCategoryById)
+		adminRoute.DELETE("/delete-user/:id",helpers.Auth(),userHandler.DeleteUser)
+		adminRoute.GET("/get-all-balance/",helpers.Auth(),balanceHandler.GetAllBalance)
 	}
 
 	

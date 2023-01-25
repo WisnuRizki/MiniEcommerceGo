@@ -42,3 +42,12 @@ func (user *User) LoginUser(email string,password string) error {
 	return nil
 
 }
+
+func (user *User) Delete(id int) error {
+	result := database.DB.Where(&User{ID: uint(id)}).Delete(&user)
+	if result.RowsAffected == 0 {
+		return result.Error
+	}
+
+	return nil
+}

@@ -25,3 +25,12 @@ func (history *History) GetHistoryByUserId(userId int) (*[]History){
 
 	return &data
 }
+
+func (history *History) DeleteByUserId(userId int) error {
+	result := database.DB.Where(&History{UserId: userId}).Delete(&history)
+	if result.RowsAffected == 0 {
+		return result.Error
+	}
+
+	return nil
+}

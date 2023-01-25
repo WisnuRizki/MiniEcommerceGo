@@ -91,5 +91,3 @@ func (seller *Seller) LoginSeller(c *gin.Context){
 	})
 
 }
-
-// Get All Produk Seller

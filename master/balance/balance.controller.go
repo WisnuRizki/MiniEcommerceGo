@@ -51,3 +51,19 @@ func (balance *Balance) AddBalanceUser(c *gin.Context){
 }
 
 // Get ALl Balance
+
+func (balance *Balance) GetAllBalance(c *gin.Context){
+	res := balance.GetAll()
+	if res == nil {
+		c.JSON(http.StatusOK,gin.H{
+			"message": "Failed To Get All Data Balance",
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK,gin.H{
+		"message": "Success",
+		"data":  res,
+	})
+}
