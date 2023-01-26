@@ -29,6 +29,7 @@ func ConnectDatabase() {
 		&modules.Category{},
 		&modules.History{},
 		&modules.Balance{},
+		&modules.Transaction{},
 		
 	)
 	

@@ -34,3 +34,12 @@ func (history *History) DeleteByUserId(userId int) error {
 
 	return nil
 }
+
+func (history *History) UpdateStatus(status string,transId int) error {
+	result := database.DB.Model(&history).Where(&History{TransId: transId}).Updates(History{Status: status})
+		if result.RowsAffected == 0 {
+			return result.Error
+		}
+
+		return nil
+}

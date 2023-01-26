@@ -6,14 +6,14 @@ import (
 
 
 type User struct {
-	ID        	uint      	`json:"id"`
-	FirstName 	string    	`json:"first_name"`
-	LastName  	string    	`json:"last_name"`
-	Email     	string    	`json:"email"`
-	Password  	string    	`json:"password"`
-	CreatedAt 	time.Time 	`json:"created_at"`
-	UpdatedAt 	time.Time 	`json:"updated_at"`
-	History 	*[]History	`json:"history"`
+	ID        	uint      		`json:"id"`
+	FirstName 	string    		`json:"first_name"`
+	LastName  	string    		`json:"last_name"`
+	Email     	string    		`json:"email"`
+	Password  	string    		`json:"password"`
+	CreatedAt 	time.Time 		`json:"created_at"`
+	UpdatedAt 	time.Time 		`json:"updated_at"`
+	Transaction *[]Transaction  `json:"transaction"`
 }
 
 type Admin struct {
@@ -56,12 +56,29 @@ type Category struct {
 	Name 		string 		`json:"name"`
 }
 
-type History struct {
-	ID        	uint      	`json:"id"`
-	UserId		int 		`json:"user_id"`
-	ProductId 	int 		`json:"product_id"`
-	Quantity	int  		`json:"quantity"`
-	TotalPrice 	int64 		`json:"total_price"`
-	User 		*User 		`json:"user"`
-	Product 	*Product	`json:"product"`
+type Transaction struct {
+	ID        		uint      	`json:"id"`
+	UserId			int 		`json:"user_id"`
+	Status 			string 		`json:"status"`
+	TransNumber 	string  	`json:"trans_number"`
+	TotalPayment	int64 		`json:"total_price"`
+	CreatedAt 		time.Time 	`json:"created_at"`
+	UpdatedAt 		time.Time 	`json:"updated_at"`
+	User 			*User  
+	History 		[]History  `json:"history" gorm:"foreignKey:TransId"` 
 }
+
+type History struct {
+	ID        	uint      	 `json:"id"`
+	UserId		int 		 `json:"user_id"`
+	ProductId 	int 		 `json:"product_id"`
+	Quantity	int  		 `json:"quantity"`
+	TotalPrice 	int64 		 `json:"total_price"`
+	TransId		int			 `json:"trans_id"`
+	Status 		string 		`json:"status"`
+	Product 	*Product	 `json:"product"`
+	Transaction *Transaction  `json:"transaction" gorm:"foreignKey:TransId"`
+}
+
+
+

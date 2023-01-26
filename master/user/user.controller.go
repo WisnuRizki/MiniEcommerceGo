@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 
@@ -9,7 +11,9 @@ import (
 	"miniecommerce.wisnu.net/helpers"
 	"miniecommerce.wisnu.net/master/balance"
 	"miniecommerce.wisnu.net/master/history"
+	"miniecommerce.wisnu.net/master/payment"
 	"miniecommerce.wisnu.net/master/product"
+	"miniecommerce.wisnu.net/master/transaction"
 )
 
 func (user *User) Register(c *gin.Context){
@@ -98,9 +102,12 @@ func (user *User) Login(c *gin.Context){
 		return
 	}
 
+	pol := transaction.GetTrans()
+
 	c.JSON(http.StatusOK,gin.H{
 		"message": "Login Success",
 		"token": jwtString,
+		"pol": pol,
 	})
 
 }
@@ -111,7 +118,9 @@ func (user *User) BuyProduct(c *gin.Context){
 	history := []history.History{}
 	balance := balance.Balance{}
 	product := product.Product{}
+	transaction := transaction.Transaction{}
 	grandTotal := 0
+	totalProduct := 0
 	idMidleware := c.MustGet("id").(float64)
 	
 	err := c.BindJSON(&history)
@@ -157,8 +166,12 @@ func (user *User) BuyProduct(c *gin.Context){
 			return 
 		}
 		history[i].UserId = int(idMidleware)
+		history[i].Status = "Pending"
 		// total price
 		grandTotal = grandTotal + int(data.TotalPrice)
+		
+		// total product
+		totalProduct = totalProduct + data.Quantity
 	}
 
 	// Check grand total with balance amount
@@ -169,7 +182,24 @@ func (user *User) BuyProduct(c *gin.Context){
 		return 
 	}
 
+	// Insert Transaction
+	transaction.UserId = int(idMidleware)
+	transaction.Status = "Pending"
+	transaction.TotalPayment = int64(grandTotal)
+	transaction.TransNumber = fmt.Sprintf("OrderNumber+ %d", rand.Int())
+	transactionId,err := transaction.Create(&transaction)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message": "Something went wrong with transaction",
+		})
+		return 
+	}
+
 	// Insert to history
+	for i,_ := range history {
+		history[i].TransId = transactionId
+	}
+
 
 	err = history[0].CreateHistory(history)
 	if err != nil {
@@ -182,14 +212,17 @@ func (user *User) BuyProduct(c *gin.Context){
 	err = balance.ReduceBalance(history[0].UserId,int64(grandTotal),amount.Amount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,gin.H{
-			"message": "Something went wrong",
+			"message": "Something went wrong with history",
 		})
 		return 
 	}
 
+	snapMidtrans := payment.CreateSnap(transactionId,int64(grandTotal))
+
 	c.JSON(http.StatusOK,gin.H{
 		"messaga": "Success buy Product",
-		"data": history,
+		"data": transaction,
+		"paymentLink": snapMidtrans,
 	})
 }
 

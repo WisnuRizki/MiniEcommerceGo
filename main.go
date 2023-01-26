@@ -9,13 +9,16 @@ import (
 	"miniecommerce.wisnu.net/master/admin"
 	"miniecommerce.wisnu.net/master/balance"
 	"miniecommerce.wisnu.net/master/category"
+	"miniecommerce.wisnu.net/master/payment"
 	"miniecommerce.wisnu.net/master/product"
 	"miniecommerce.wisnu.net/master/seller"
 	"miniecommerce.wisnu.net/master/user"
 )
 
 // Todo
-// [] Buy Product User
+// Buat Table Order
+// Buat Tabel Transaction
+// Buat End Point Callback
 
 
 
@@ -68,6 +71,11 @@ func main(){
 		adminRoute.PUT("/update-category/:id",helpers.Auth(),categoryHandler.UpdateCategoryById)
 		adminRoute.DELETE("/delete-user/:id",helpers.Auth(),userHandler.DeleteUser)
 		adminRoute.GET("/get-all-balance/",helpers.Auth(),balanceHandler.GetAllBalance)
+	}
+
+	callBackRoute := r.Group("/v1/callback")
+	{
+		callBackRoute.POST("/callback-midtrans",payment.CallBackMidtrans)
 	}
 
 	
